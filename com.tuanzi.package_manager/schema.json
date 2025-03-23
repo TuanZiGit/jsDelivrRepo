@@ -1,0 +1,155 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "title": "TUANZI Package Manager - Package Manifest",
+    "description": "A package's manifest file",
+    "properties": {
+        "id": {
+            "description": "Package's ID",
+            "type": "string",
+            "examples": [
+                "PACKAGE_ID",
+                "AUTHOR/PACKAGE_ID"
+            ]
+        },
+        "display_name":{
+            "description": "Package's friendly name",
+            "type": "string",
+            "examples": [
+                "Unnamed package"
+            ]
+        },
+        "author": {
+            "description": "Author of the package",
+            "type": "string",
+            "examples": [
+                "AUTHOR_NAME",
+                "AUTHOR_NAME@AUTHOR_ID",
+                "@AUTHOR_ID"
+            ],
+            "pattern": "^(?:[^@]+@[a-zA-Z0-9_-]+|@[a-zA-Z0-9_-]+|[^@]+)$"
+        },
+        "version": {
+            "description": "Package's version. Format: @[release|preview] A.B.C.D-[release|preview]. Default to release.",
+            "type": "string",
+            "examples": [
+                "1.0.0.0",
+                "@release 1.0.0.0",
+                "@preview 1.0.0.0",
+                "1.0.0.0-release",
+                "1.0.0.0-preview"
+            ],
+            "pattern": "^(?:@(?:release|preview)\\s+\\d+(?:\\.\\d+){3}|(?:\\d+(?:\\.\\d+){3})(?:-(?:release|preview))|\\d+(?:\\.\\d+){3})$"
+        },
+        "description": {
+            "description": "Package's description",
+            "type": "string",
+            "examples": [
+                "Your package's description"
+            ]
+        },
+        "tags": {
+            "description": "Tag of the package",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "example",
+                    "toolkit",
+                    "awesomes",
+                    "fix",
+                    "game",
+                    "editor",
+                    "browser",
+                    "environment",
+                    "communication",
+                    "open-source",
+                    "hacking",
+                    "simple-tool"
+                ]
+            }
+        },
+        "startup": {
+            "description": "Package's startup config",
+            "type": "object",
+            "properties": {
+                "commandline": {
+                    "description": "Startup commandline config",
+                    "type": "object",
+                    "properties": {
+                        "file": {
+                            "description": "Executable file to start",
+                            "type": "string",
+                            "examples": ["/executable.exe"]
+                        },
+                        "args": {
+                            "description": "Arguments passed to the executable",
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "env": {
+                            "description": "Environment variable passed to the executable",
+                            "type": "object",
+                            "patternProperties": {
+                                ".*": {"type":"string"}
+                            }
+                        },
+                        "working_dir": {
+                            "description": "Working directory of the executable",
+                            "type": "string",
+                            "examples": ["/"]
+                        }
+                    },
+                    "examples": [
+                        {
+                            "file": "/executable.exe",
+                            "args": [],
+                            "env": {},
+                            "working_dir": "/"
+                        }
+                    ],
+                    "required": ["file"]
+                },
+                "special": {
+                    "description": "Package specified startup config",
+                    "type": "object",
+                    "properties": {
+                        "bypass_wd": {
+                            "description": "Automatically set whitelist in WinDefender",
+                            "type": "boolean",
+                            "default": false
+                        }
+                    }
+                }
+            },
+            "required": ["commandline"]
+        },
+        "config": {
+            "description": "Package's configurable variables",
+            "type": "object",
+            "patternProperties": {
+                ".*": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "description": "Config var type",
+                            "type": "string",
+                            "enum": ["string","number","boolean"]
+                        },
+                        "default": {
+                            "description": "Default value of the config var"
+                        },
+                        "show_on": {
+                            "description": "Show this config on specified condition",
+                            "type": "string"
+                        }
+                    },
+                    "required": ["type"]
+                }
+            }
+        }
+    },
+    "required": ["id","version","startup"]
+}
